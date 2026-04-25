@@ -1,7 +1,8 @@
-import React from 'react';
+// 0. Importamos el "estado" para que la web pueda cambiar sin recargar
+import { useState } from 'react';
 
-// 1. Inventario de habitaciones
-const HABITACIONES = [
+// 1. Datos iniciales del hotel (el inventario)
+const INVENTARIO_INICIAL = [
   { numero: '101', tipo: 'Doble', estado: 'libre' },
   { numero: '102', tipo: 'Suite', estado: 'ocupada', cliente: 'García, Daniel' },
   { numero: '103', tipo: 'Individual', estado: 'sucia' },
@@ -12,8 +13,8 @@ const HABITACIONES = [
   { numero: '203', tipo: 'Individual', estado: 'libre' },
 ];
 
-// 2. Componente de la Tarjeta
-function TarjetaHabitacion({ hab }: { hab: any }) {
+// 2. Componente de la Tarjeta (ahora recibe la función alClic)
+function TarjetaHabitacion({ hab, alClic }: { hab: any, alClic: (num: string) => void }) {
   const estilosEstado: any = {
     libre: 'border-green-500 text-green-600',
     ocupada: 'border-red-500 text-red-600',
@@ -22,7 +23,11 @@ function TarjetaHabitacion({ hab }: { hab: any }) {
   };
 
   return (
-    <div className={`bg-white p-4 rounded-lg shadow-md border-l-4 ${estilosEstado[hab.estado] || 'border-slate-300'}`}>
+    <div 
+      // Cuando el usuario hace clic, avisamos a la App principal
+      onClick={() => alClic(hab.numero)}
+      className={`bg-white p-4 rounded-lg shadow-md border-l-4 cursor-pointer hover:bg-slate-50 transition-colors ${estilosEstado[hab.estado] || 'border-slate-300'}`}
+    >
       <div className="flex justify-between items-start mb-2">
         <span className="text-sm font-bold text-slate-400">{hab.numero}</span>
         <span className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-500 rounded uppercase font-bold">
@@ -45,6 +50,21 @@ function TarjetaHabitacion({ hab }: { hab: any }) {
 
 // 3. Aplicación Principal
 export default function App() {
+  // Creamos la "memoria" de la app con las habitaciones
+  const [habitaciones, setHabitaciones] = useState(INVENTARIO_INICIAL);
+
+  // Función para cambiar el estado de una habitación
+  const manejarAccion = (numero: string) => {
+    const nuevasHabitaciones = habitaciones.map(hab => {
+      // Si clicamos una sucia, la marcamos como libre (limpieza terminada)
+      if (hab.numero === numero && hab.estado === 'sucia') {
+        return { ...hab, estado: 'libre' };
+      }
+      return hab;
+    });
+    setHabitaciones(nuevasHabitaciones);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       {/* Cabecera */}
@@ -53,12 +73,19 @@ export default function App() {
           CloudHotel <span className="text-blue-600">PMS</span>
         </h1>
         <p className="text-slate-500 font-medium">Panel de Control de Recepción</p>
+        <p className="text-[10px] text-blue-400 mt-2 font-bold uppercase tracking-widest">
+          Tip: Pulsa una habitación "sucia" para simular limpieza.
+        </p>
       </header>
 
-      {/* Grid del Rack */}
+      {/* Grid del Rack dinámico */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {HABITACIONES.map((hab) => (
-          <TarjetaHabitacion key={hab.numero} hab={hab} />
+        {habitaciones.map((hab) => (
+          <TarjetaHabitacion 
+            key={hab.numero} 
+            hab={hab} 
+            alClic={manejarAccion} 
+          />
         ))}
       </div>
 
