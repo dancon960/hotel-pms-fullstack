@@ -1,14 +1,9 @@
 // src/utils/inventario.ts
-import type { Habitacion } from '../types';
-
-export interface Planta {
-  planta: number;
-  habitaciones: Habitacion[];
-}
+import type { Planta } from '../types/index'; 
 
 export const HOTEL_DATA: Planta[] = [
   {
-    planta: 1,
+    piso: 1,
     habitaciones: [
       { numero: '101', tipo: 'DBL', estado: 'libre', precio: 85 },
       { numero: '102', tipo: 'SUI', estado: 'ocupada', cliente: 'García, Daniel', precio: 150 },
@@ -17,7 +12,7 @@ export const HOTEL_DATA: Planta[] = [
     ]
   },
   {
-    planta: 2,
+    piso: 2,
     habitaciones: [
       { numero: '201', tipo: 'DBL', estado: 'mantenimiento', precio: 85 },
       { numero: '202', tipo: 'DBL', estado: 'sucia', precio: 85 },

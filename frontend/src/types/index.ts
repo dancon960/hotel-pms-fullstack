@@ -6,10 +6,10 @@ export interface Habitacion {
   tipo: string;
   estado: EstadoHabitacion;
   cliente?: string;
-  precio: number; // Añadimos precio para que parezca más real
+  precio: number;
 }
 
 export interface Planta {
-  piso: number;
+  piso: number;      // <--- Asegúrate de que esto está aquí
   habitaciones: Habitacion[];
 }
